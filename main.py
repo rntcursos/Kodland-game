@@ -161,6 +161,7 @@ class Player(Obj):
         self.dash_speed = 4
         self.dash_timer = 1
         self.dash_duration = 1
+        self.n_dash = 3
         self.time_dash = 0
 
         self.flip = False
@@ -228,14 +229,16 @@ class Player(Obj):
     def reset_dash(self, dash_speed=10):
         if self.can_dash:
             self.time_dash += 1
-            if self.direction.x > 0:
+            if not self.flip:
                 self.direction.x = self.dash_speed
-            elif self.direction.x < 0:
+            else:
                 self.direction.x = -self.dash_speed
             if self.time_dash >= dash_speed:
                 self.can_dash = False
                 self.time_dash = 0
                 self.direction.x = 0
+                if self.n_dash > 0:
+                    self.n_dash -= 1
 
     def limit_to_screen(self):
         
@@ -257,7 +260,7 @@ class Player(Obj):
                 self.direction.y = self.jump_speed
                 sounds.jump.play()
             
-            if keyboard.z and not self.on_ground:
+            if keyboard.z and not self.on_ground and self.n_dash > 0:
                 self.can_dash = True
                 sounds.dash.play()
             
@@ -316,8 +319,8 @@ class Scene:
         self.collisions = []
         self.particles = []
 
-        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4, MAP5]
-        self.stage_map = random.randint(0,5)
+        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4, MAP5, MAP6, MAP7]
+        self.stage_map = 7
 
     def start_music(self, lib, music):
         lib.play(music)
@@ -342,7 +345,7 @@ class Scene:
 
     def generate_map(self, all_sprites, collisions, player):
         list_img = ["titles/1.png","titles/2.png","titles/3.png"]
-        for row_index, row in enumerate(self.world_map[self.stage_map]):
+        for row_index, row in enumerate(self.world_map[n_stage]):
             for col_index, col in enumerate(row):
                 x = col_index * TILE_SIZE
                 y = row_index * TILE_SIZE
