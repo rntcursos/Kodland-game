@@ -1,5 +1,4 @@
 from pgzero.screen import *
-from enum import Enum
 import random
 
 #utils
@@ -8,11 +7,15 @@ class Vector2:
         self.x = x
         self.y = y
 
-class State(Enum):
+class State:
     IDLE = 1
     WALK = 2
     JUMP = 3
-    ATACK = 4
+    DASH = 4
+    DASH_LEFT = 5
+    WALK_LEFT = 6
+    JUMP_LEFT = 7
+    IDLE_LEFT = 8
 
 class Animated_sprite:
 
@@ -32,6 +35,8 @@ class Animated_sprite:
             self.frame = (self.frame + 1) % self.n_frame
             
         return f'{self.path}{self.frame}.png'
+
+
 
 #Screen settings
 WIDTH = 1280
@@ -54,8 +59,7 @@ BG_MAP = [
     'XXXXXXXXXXXXXXXXXXXX',
     'XXXXXXXXXXXXXXXXXXXX',
     'XXXXXXXXXXXXXXXXXXXX',
-    'XXXXXXXXXXXXXXXXXXXX',
-    
+    'XXXXXXXXXXXXXXXXXXXX', 
 ]
 
 MAP0 = [
@@ -65,12 +69,12 @@ MAP0 = [
     'XXXXXXXXXXXXXXXXXXXX',
     '                    ',
     '                    ',
-    ' P               C  ',
+    ' P   AAAAAA       C  ',
     'XXXXXXXXXXX  XXXXXXX',
     'XXXXXXXXXXX  XXXXXXX',
     'XXXXXXXXXXX  XXXXXXX',
     'XXXXXXXXXXXSSXXXXXXX',
-    'XXXXXXXXXXXXXXXXXXXX'
+    'XXXXXXXXXXXXXXXXXXXX',
 
 ]
 
@@ -83,10 +87,11 @@ MAP1 = [
 '       XXXXXXXXXXXXX',
 '                    ',
 '                    ',
-'  P                C',
+'  P   AA   A       C',
 'XXXXX XX  XXX XX  XXX',
 'XXXXX XX  XXX XX  XXX',
-'XXXXX XX  XXX XX  XXX']
+'XXXXX XX  XXX XX  XXX',
+'SSSSSSSSSSSSSSSSSSSSS']
 
 MAP2 = [
 '                    ',
@@ -97,10 +102,11 @@ MAP2 = [
 '                    ',
 '            X       ',
 '                    ',
-'     X        X   XXX',
-'  PX XX     X XX  C  ',
+'     X        XAAAXXX',
+'  PX XX     XAXX  C  ',
+'X XX  X XXAAX XXXXXXX',
 'X XX  X XX  X XXXXXXX',
-'X XX  X XX  X XXXXXXX']
+'SSSSSSSSSSSSSSSSSSSSS']
 
 MAP3 = [
 '                    ',

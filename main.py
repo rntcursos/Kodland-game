@@ -15,9 +15,19 @@ class Obj(Actor):
         for g in self.group:
             if g is not None:
                 g.append(self)
-        
+
+        self.time = 0
+        self.frame = 0
+    
+    def animation(self,path, speed_animation, n_frame):
+        self.time += 1
+        if self.time > speed_animation:
+            self.time = 0
+            self.frame = (self.frame + 1) % n_frame
+            
+        return f'{path}{self.frame}.png'
+
     def update(self):
-        
         pass
 
 class Saw(Obj):
@@ -102,7 +112,33 @@ class Fade:
                     self.call_fade = False
 
     def draw(self):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, self.rect) # type: ignore
+
+class Coin(Obj):
+    def __init__(self, img, pos, *group):
+        super().__init__(img, pos, *group)
+    
+    def update(self):
+        self.image = self.animation('coin/', 7, 5)
+        return super().update()
+
+class Particle:
+    def __init__(self, x, y):
+        self.x = x  # Posição X
+        self.y = y  # Posição Y
+        self.size = random.randint(3, 6)  # Tamanho da partícula
+        self.color = (random.randint(200, 255), random.randint(200, 255), random.randint(0, 255))  # Cor aleatória
+        self.life = random.randint(40, 60)  # Vida da partícula (número de frames)
+        self.velocity_x = random.uniform(-2, 2)  # Velocidade em X
+        self.velocity_y = random.uniform(-2, 2)  # Velocidade em Y
+    
+    def update(self):
+        self.x += self.velocity_x  # Atualiza a posição X
+        self.y += self.velocity_y  # Atualiza a posição Y
+        self.life -= 1  # Diminui a vida da partícula
+
+    def draw(self):
+        screen.draw.filled_circle((self.x, self.y), self.size, self.color) # type: ignore
 
 class Player(Obj):
     def __init__(self, img, pos, collisions, group):
@@ -121,30 +157,40 @@ class Player(Obj):
         self.collision_area = Rect(self.x, self.y, 40,40)
         
         self.on_ground = False
-        self.can_atack = False
-        self.time_atack = 0
+        self.can_dash = False
+        self.dash_speed = 4
+        self.dash_timer = 1
+        self.dash_duration = 1
+        self.time_dash = 0
+
+        self.flip = False
 
         self.animations = {
             State.IDLE: Animated_sprite('player/idle/', 7),
+            State.IDLE_LEFT: Animated_sprite('player/idlef/', 7),
             State.WALK: Animated_sprite('player/walk/', 7),
-            State.JUMP: Animated_sprite('player/jump/', 5),
-            State.ATACK: Animated_sprite('player/atack/', 5),
+            State.WALK_LEFT: Animated_sprite('player/walkf/', 7),
+            State.JUMP: Animated_sprite('player/jump/', 1),
+            State.JUMP_LEFT: Animated_sprite('player/jumpf/', 1),
+            State.DASH: Animated_sprite('player/dash/', 1),
+            State.DASH_LEFT: Animated_sprite('player/dashf/', 1)
         }
         
         self.control_animation = self.animations[State.IDLE]
         self.current_animation = State.IDLE
-
-        
-
+            
+    
     def apply_jump(self):
         if self.on_ground:
             self.direction.y += self.jump_speed
+            
     
     def return_to_start(self):
         self.x, self.y = self.start_position
+        sounds.death.play()
 
     def drop_platform(self):
-        if self.y > HEIGHT:
+        if self.y > HEIGHT + 200:
             self.return_to_start()
 
     def y_collision_check(self):
@@ -170,56 +216,84 @@ class Player(Obj):
                         self.left = sprite.right
     
     def gravity_force(self):
+        if not self.can_dash:
+            if self.direction.y < 10:
+                self.direction.y += self.gravity
         
-        self.direction.y += self.gravity
-        self.y += self.direction.y
+            self.y += self.direction.y
     
     def move(self):
         self.x += self.direction.x * self.speed
     
-    def reset_atack(self, atack_speed=20):
-        if self.can_atack:
-            self.time_atack += 1
-            if self.time_atack >= atack_speed:
-                self.can_atack = False
-                self.time_atack = 0
+    def reset_dash(self, dash_speed=30):
+        if self.can_dash:
+            self.time_dash += 1
+            if self.direction.x > 0:
+                self.direction.x = self.dash_speed
+            elif self.direction.x < 0:
+                self.direction.x = -self.dash_speed
+            if self.time_dash >= dash_speed:
+                self.can_dash = False
+                self.time_dash = 0
+                self.direction.x = 0
+
+    def limit_to_screen(self):
+        
+        self.x = max(64, min(self.x, 1216))
                 
     def events(self):
-        if keyboard.left:
-            self.direction.x = -1
-        elif keyboard.right:
-            self.direction.x = 1
-        else:
-            self.direction.x = 0
+        if not self.can_dash:
+            if keyboard.left:
+                self.direction.x = -1
+                self.flip = True
+            elif keyboard.right:
+                self.direction.x = 1
+                self.flip = False
+            else:
+                self.direction.x = 0
         
-        if keyboard.up and self.on_ground:
-            self.on_ground = False
-            self.direction.y = self.jump_speed
-        
-        if keyboard.z:
-            self.can_atack = True
+            if keyboard.up and self.on_ground:
+                self.on_ground = False
+                self.direction.y = self.jump_speed
+                sounds.jump.play()
+            
+            if keyboard.z and not self.on_ground:
+                self.can_dash = True
+                sounds.dash.play()
             
     def animation_stage(self):
-        # Altera o estado baseado nas condições do jogador
-        if self.can_atack:
-            self.current_animation = State.ATACK
+
+        if self.can_dash and not self.on_ground:
+            if self.flip:
+                self.current_animation = State.DASH_LEFT
+            else:
+                self.current_animation = State.DASH
         else:
 
             if self.on_ground and self.direction.x != 0:
-                self.current_animation = State.WALK
+                if self.flip:
+                    self.current_animation = State.WALK_LEFT
+                else:
+                    self.current_animation = State.WALK
             elif self.on_ground and self.direction.x == 0:
-                self.current_animation = State.IDLE
+                if self.flip:
+                    self.current_animation = State.IDLE_LEFT
+                else:
+                    self.current_animation = State.IDLE
             elif not self.on_ground:
-                self.current_animation = State.JUMP
+                if self.flip:
+                    self.current_animation = State.JUMP_LEFT
+                else:
+                    self.current_animation = State.JUMP
+                
         
-        # Se a animação atual for diferente, mude para a animação correspondente
         if self.control_animation != self.animations[self.current_animation]:
             self.control_animation = self.animations[self.current_animation]
 
     def draw(self):
         overlay_image = self.control_animation.animation()
-        screen.blit("player/base/base", (self.x - 20,self.y - 20))
-        screen.blit(overlay_image, (self.x - 30, self.y - 20))
+        screen.blit("player/base/base", (self.x - 20,self.y - 20)) # type: ignore
+        screen.blit(overlay_image, (self.x - 30, self.y - 20))  # type: ignore
 
     def update(self):
         self.events()
@@ -228,9 +302,9 @@ class Player(Obj):
         self.gravity_force()
         self.y_collision_check()
         self.animation_stage()
-        self.reset_atack()
+        self.reset_dash()
         self.drop_platform()
-
+        self.limit_to_screen()
 
 #Scenes Objs
 class Scene:
@@ -240,25 +314,30 @@ class Scene:
         self.new = self
         self.all_sprites = []
         self.collisions = []
+        self.particles = []
 
-        self.world_map = [MAP0, MAP1, MAP2]
+        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4]
         self.stage_map = 0
 
     def start_music(self, lib, music):
         lib.play(music)
+
+    def create_particles(self,x, y):
+        for _ in range(10):  # Cria 10 partículas de uma vez
+            self.particles.append(Particle(x, y))
     
     def draw(self, screen):
         pass
 
     def generate_bg(self, all_sprites):
-        list_img = ["titles/1.png","titles/2.png","titles/3.png"]
+        list_img = ["titles/bg","titles/bg2", 'titles/bg3', 'titles/bg4', 'titles/bg5', 'titles/bg6', 'titles/bg7']
         for row_index, row in enumerate(BG_MAP):
             for col_index, col in enumerate(row):
                 x = col_index * TILE_SIZE
                 y = row_index * TILE_SIZE
-                
+                choose = random.choice(list_img)
                 if col == "X":
-                    new = Obj('tiles/bg', (x,y), all_sprites)
+                    new = Obj(choose, (x,y), all_sprites)
                 
 
     def generate_map(self, all_sprites, collisions, player):
@@ -281,6 +360,9 @@ class Scene:
                 elif col == "S":
                     new = Obj('obstacles/o2', (x+16,y+32), all_sprites, collisions)
                     new.name = "obstacle"
+                elif col == "A":
+                    new = Coin('coin/0', (x+16,y+32), all_sprites, collisions)
+                    new.name = "coin"
                 elif col == "P":
                     player.x, player.y = x,y
                     player.start_position = (x,y)
@@ -361,18 +443,21 @@ class GameScene(Scene):
         self.fade = Fade(self.all_sprites)
         self.fade.fadein()
 
-        
-
     def draw(self, screen):
         screen.fill(COLOR_BG)
         for sprite in self.all_sprites:
             sprite.draw()
+
+        for particle in self.particles:
+            particle.draw()
 
     def on_key_down(self, key):
         pass
 
     def on_mouse_down(self, pos):
         pass
+
+    
 
     def check_collision(self):
         global n_stage
@@ -387,14 +472,29 @@ class GameScene(Scene):
                 if sprite.colliderect(self.player):
                     if self.player.life > 1:
                         self.player.life -= 1
+                        sounds.death.play()
+                        self.create_particles(self.player.x, self.player.y)
                         self.player.return_to_start()
+                        
                     else:
                         self.change_scene(GameOver())
+            
+            if sprite.name == "coin":
+                if sprite.colliderect(self.player):
+                    self.all_collisions.remove(sprite)
+                    self.all_sprites.remove(sprite)
+                    sounds.coin.play()
         
 
     def update(self):
         for sprite in self.all_sprites:
             sprite.update()
+        
+        for particle in self.particles:
+            particle.update()
+
+            if particle.life <= 0:
+                self.particles.remove(particle)
         
         self.check_collision()
         
@@ -416,8 +516,8 @@ def on_mouse_down(pos):
     current_scene.on_mouse_down(pos)
 
 def draw():
-    screen.fill(COLOR_BG)
-    current_scene.draw(screen)
+    screen.fill(COLOR_BG) # type: ignore
+    current_scene.draw(screen) # type: ignore
 
 def update():
     global current_scene
