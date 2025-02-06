@@ -21,4 +21,4 @@ pip install pgzero
 ```
 Clone este repositório ou baixe os arquivos do projeto.
 Execute o jogo e use os controles mencionados para navegar pelos mapas.
-Divirta-se e boa sorte na sua jornada para escapar do Kodland - Battle Castle!
+## Divirta-se e boa sorte na sua jornada para escapar do Kodland - Battle Castle!
