@@ -2,11 +2,11 @@
 Bem-vindo ao Kodland - Battle Castle, um emocionante desafio de projeto desenvolvido com Pygame Zero! Prepare-se para uma aventura cheia de ação enquanto você navega por mapas desafiadores e tenta escapar do castelo.
 
 ## Controles
-Cima (Up): Pular (Jump)
-Esquerda (Left): Mover para a esquerda (Move Left)
-Direita (Right): Mover para a direita (Move Right)
-Z: Dash (apenas no ar)
-X: Pular (Jump)
+##### Cima (Up): Pular (Jump)
+##### Esquerda (Left): Mover para a esquerda (Move Left)
+##### Direita (Right): Mover para a direita (Move Right)
+##### Z: Dash (apenas no ar)
+##### X: Pular (Jump)
 ## Objetivo
 Complete todos os mapas para conseguir sair do castelo. Você terá que superar obstáculos e inimigos em cada nível.
 
