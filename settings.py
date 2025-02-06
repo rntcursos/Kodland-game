@@ -134,6 +134,19 @@ MAP4 = [
 '  P   XXSSXXXX    XX',
 'SXXXXXXXXXXXXXSSSSXX']
 
+MAP5 = [
+'XXXXXXXXXXXXXXXXXXXX',
+'X                   ',
+'X                   ',
+'X                   ',
+'X                   ',
+'X                   ',
+'X      O   O       ',
+'X                   ',
+'                    ',
+'  P    X   X  X  X C',
+'XXXXXSSSSSSSSSSSSSXX']
+
 TEXT_INTRO = """
 Título: O Cavaleiro e a Armadilha do Mago Tharos
 
@@ -159,3 +172,12 @@ Ele sabia que precisava encontrar uma saída antes de poder resgatar sua filha..
 
 Continua!
 """
+
+GAMEOVER_TEXT = """
+Você falhou em resgatar Elenora.
+
+A luz da esperança se apagou, e o castelo de Tharos permaneceu impenetrável. A risada do mago ressoou em sua mente,
+um lembrete cruel de que a bravura nem sempre é suficiente. O destino de Elenora agora está selado nas garras do mal.
+
+Recomece sua jornada e enfrente os desafios novamente. 
+A coragem de um verdadeiro cavaleiro nunca deve ser subestimada!"""

@@ -225,7 +225,7 @@ class Player(Obj):
     def move(self):
         self.x += self.direction.x * self.speed
     
-    def reset_dash(self, dash_speed=30):
+    def reset_dash(self, dash_speed=10):
         if self.can_dash:
             self.time_dash += 1
             if self.direction.x > 0:
@@ -316,8 +316,8 @@ class Scene:
         self.collisions = []
         self.particles = []
 
-        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4]
-        self.stage_map = 0
+        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4, MAP5]
+        self.stage_map = random.randint(0,5)
 
     def start_music(self, lib, music):
         lib.play(music)
@@ -342,7 +342,7 @@ class Scene:
 
     def generate_map(self, all_sprites, collisions, player):
         list_img = ["titles/1.png","titles/2.png","titles/3.png"]
-        for row_index, row in enumerate(self.world_map[n_stage]):
+        for row_index, row in enumerate(self.world_map[self.stage_map]):
             for col_index, col in enumerate(row):
                 x = col_index * TILE_SIZE
                 y = row_index * TILE_SIZE
@@ -463,8 +463,6 @@ class Intro(Scene):
             sprite.update()
         return super().update()
         
-
-
 class GameScene(Scene):
     def __init__(self):
         super().__init__()
@@ -538,8 +536,34 @@ class GameOver(Scene):
     def __init__(self):
         super().__init__()
 
-        print("gameover")
+        self.button = Button('menu/text_play', (WIDTH - 120, HEIGHT - 100), self.all_sprites)
+
+        self.fade = Fade(self.all_sprites)
+        self.fade.fadein()
+
         self.start_music(music, 'gameover')
+    
+    def on_key_down(self,key):
+        
+        if key == 27: #ESC
+            quit()
+        if key == 13: #ENTER
+            self.start_music(music, 'game')
+            self.change_scene(MenuScene())
+
+    def on_mouse_down(self, pos):
+        if self.button.collidepoint(pos):
+            self.start_music(music, 'game')
+            self.change_scene(MenuScene())
+
+    def draw(self, screen):
+        screen.draw.text(GAMEOVER_TEXT, (100,100))
+        for sprite in self.all_sprites:
+            sprite.draw()
+    
+    def update(self):
+        for sprite in self.all_sprites:
+            sprite.update()
 
 TITLE = "Battle Castle"
 
