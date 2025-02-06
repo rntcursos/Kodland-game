@@ -134,3 +134,28 @@ MAP4 = [
 '  P   XXSSXXXX    XX',
 'SXXXXXXXXXXXXXSSSSXX']
 
+TEXT_INTRO = """
+Título: O Cavaleiro e a Armadilha do Mago Tharos
+
+Era uma vez, um valente cavaleiro chamado Sir Alaric. Ele era conhecido por sua bravura e lealdade,
+mas seu coração estava pesado com a dor da perda.
+Sua filha, a doce e corajosa Elenora, havia sido sequestrada por um temido mago chamado Tharos, que habitava um castelo
+sombrio nas montanhas.
+
+Determinado a resgatar sua filha, Sir Alaric armou-se com sua armadura reluzente e sua espada afiada. 
+Ele montou seu fiel cavalo, um magnífico corcel chamado Tempestade, e partiu em direção ao castelo.
+
+Após dias de viagem, ele finalmente chegou às imponentes portas de ferro do castelo de Tharos.
+Com um golpe firme, ele empurrou as portas e entrou. O interior do castelo era tão escuro quanto
+a noite, com paredes de pedra cobertas de musgo e teias de aranha. Sir Alaric chamou por Elenora,
+mas apenas o eco de sua própria voz respondeu. Ele avançou cautelosamente, sentindo que algo estava errado.
+
+De repente, as portas se fecharam atrás dele com um estrondo, e uma risada sinistra ecoou pelas paredes.
+Era Tharos, que apareceu em uma nuvem de fumaça negra. "Bem-vindo, Sir Alaric! Você caiu na minha armadilha.
+Sua coragem é admirável, mas você nunca sairá daqui!"
+
+Sir Alaric, percebendo que estava preso, não se deixou abater.
+Ele sabia que precisava encontrar uma saída antes de poder resgatar sua filha...
+
+Continua!
+"""

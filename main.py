@@ -412,13 +412,13 @@ class MenuScene(Scene):
         if key == 27: #ESC
             quit()
         if key == 13: #ENTER
-            self.start_music(music, 'game')
-            self.change_scene(GameScene())
+            self.start_music(music, 'gameover')
+            self.change_scene(Intro())
 
     def on_mouse_down(self, pos):
         if self.menu_itens['button_play'].collidepoint(pos):
-            self.start_music(music, 'game')
-            self.change_scene(GameScene())
+            self.start_music(music, 'gameover')
+            self.change_scene(Intro())
         elif self.menu_itens['button_exit'].collidepoint(pos):
             quit()
 
@@ -428,6 +428,42 @@ class MenuScene(Scene):
         self.menu_itens['bg2'].update(1,360,-360)
         for sprite in self.all_sprites:
             sprite.update()
+
+class Intro(Scene):
+    def __init__(self):
+        super().__init__()
+        
+        self.comands = Obj('menu/comands', (45,550), self.all_sprites)
+        self.button = Button('menu/text_play', (WIDTH - 120, HEIGHT - 100), self.all_sprites)
+
+        self.fade = Fade(self.all_sprites)
+        self.fade.fadein()
+
+    def on_key_down(self,key):
+        
+        if key == 27: #ESC
+            quit()
+        if key == 13: #ENTER
+            self.start_music(music, 'game')
+            self.change_scene(GameScene())
+
+    def on_mouse_down(self, pos):
+        if self.button.collidepoint(pos):
+            self.start_music(music, 'game')
+            self.change_scene(GameScene())
+
+    def draw(self, screen):
+        screen.draw.text(TEXT_INTRO, (100,100))
+
+        for sprite in self.all_sprites:
+            sprite.draw()
+    
+    def update(self):
+        for sprite in self.all_sprites:
+            sprite.update()
+        return super().update()
+        
+
 
 class GameScene(Scene):
     def __init__(self):
