@@ -255,12 +255,12 @@ class Player(Obj):
             else:
                 self.direction.x = 0
         
-            if keyboard.up and self.on_ground:
+            if keyboard.z and self.on_ground:
                 self.on_ground = False
                 self.direction.y = self.jump_speed
                 sounds.jump.play()
             
-            if keyboard.z and not self.on_ground and self.n_dash > 0:
+            if keyboard.x and not self.on_ground and self.n_dash > 0:
                 self.can_dash = True
                 sounds.dash.play()
             
@@ -366,6 +366,10 @@ class Scene:
                 elif col == "A":
                     new = Coin('coin/0', (x+16,y+32), all_sprites, collisions)
                     new.name = "coin"
+
+                elif col == "0":
+                    new = Obj('titles/4', (x,y), all_sprites, collisions)
+                    new.name = "theend"
                 elif col == "P":
                     player.x, player.y = x,y
                     player.start_position = (x,y)
@@ -515,6 +519,10 @@ class GameScene(Scene):
                         
                     else:
                         self.change_scene(GameOver())
+
+            if sprite.name == "theend":
+                if sprite.colliderect(self.player):
+                    self.change_scene(GameOver())
             
             if sprite.name == "coin":
                 if sprite.colliderect(self.player):

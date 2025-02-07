@@ -164,7 +164,7 @@ MAP7 = [
 'XXXXXXXXXXXXXXXXXXXX',
 'X                   ',
 'X                   ',
-'X  C                ',
+'X  0                ',
 'X  X                ',
 'X   XSSXX        X  ',
 'X          X  X     ',
