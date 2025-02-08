@@ -164,7 +164,7 @@ MAP7 = [
 'XXXXXXXXXXXXXXXXXXXX',
 'X                   ',
 'X                   ',
-'X  0                ',
+'X  C                ',
 'X  X                ',
 'X   XSSXX        X  ',
 'X          X  X     ',
@@ -172,6 +172,19 @@ MAP7 = [
 ' X      XXSSSSSX    ',
 '  P   XSSSSSX       ',
 'XXXSSS          O   ']
+
+MAP8 = [
+'                    ',
+'                    ',
+'                    ',
+'   P                ',
+'  XXX      OOO      ',
+'    XSSSS        X  ',
+'                    ',
+'   O      X  O  X   ',
+'      X  XXSSSSSX   ',
+'     SSSSSSX       0',
+'XXXSSS            XX']
 
 TEXT_INTRO = """
 Título: O Cavaleiro e a Armadilha do Mago Tharos

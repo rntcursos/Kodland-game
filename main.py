@@ -319,8 +319,8 @@ class Scene:
         self.collisions = []
         self.particles = []
 
-        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4, MAP5, MAP6, MAP7]
-        self.stage_map = 7
+        self.world_map = [MAP0, MAP1, MAP2, MAP3, MAP4, MAP5, MAP6, MAP7,MAP8]
+        self.stage_map = 8
 
     def start_music(self, lib, music):
         lib.play(music)
@@ -553,7 +553,8 @@ class GameOver(Scene):
         self.fade.fadein()
 
         self.start_music(music, 'gameover')
-    
+        global n_stage
+        n_stage = 0
     def on_key_down(self,key):
         
         if key == 27: #ESC
